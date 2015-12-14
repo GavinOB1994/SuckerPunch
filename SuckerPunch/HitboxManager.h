@@ -29,22 +29,25 @@ class HitboxManager
 private:
 	sf::RectangleShape box;
 	sf::RectangleShape hurtBox;
+	sf::Vector2f size;
 	int frameCount;
 	bool canMove;
 
 public:
 
-	const sf::Vector2f SIZE = sf::Vector2f(100, 200);
 
-	HitboxManager();
+	HitboxManager(float width = 50.0f, float height = 50.0f);
 	bool BoxCollision(sf::RectangleShape enemyBox);
-	void HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos);
+	//template <typename T, typename U>
+	void HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth);
 	void IsHurtAcitve();
 	void Update(sf::Vector2f pos);
 	void setHitboxCol(sf::Color col);
 
 	sf::RectangleShape getBox();
 	sf::RectangleShape getHurtBox();
+	sf::Vector2f getSize();
 	bool getCanMove();
+
 };
 

@@ -2,9 +2,10 @@
 #include "HitboxManager.h"
 
 
-HitboxManager::HitboxManager()
+HitboxManager::HitboxManager(float width, float height)
 {
-	box = sf::RectangleShape(SIZE);
+	size = sf::Vector2f(width, height);
+	box = sf::RectangleShape(size);
 	box.setFillColor(sf::Color(0,255,0,128));
 	hurtBox = sf::RectangleShape(box);
 	hurtBox.setFillColor(sf::Color(255,0,0,128));
@@ -17,12 +18,12 @@ void HitboxManager::Update(sf::Vector2f pos)
 	box.setPosition(pos);
 	IsHurtAcitve();
 }
-
-void HitboxManager::HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos)
+//template <typename T, typename U>
+void HitboxManager::HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth)
 {
 	if (playerPos.x < enemyPos.x)
 	{
-		hurtBox.setPosition(sf::Vector2f(playerPos.x + size.x, playerPos.y));
+		hurtBox.setPosition(sf::Vector2f(playerPos.x + playerWidth, playerPos.y));
 	}
 	else
 	{
@@ -79,5 +80,9 @@ bool HitboxManager::getCanMove()
 void HitboxManager::setHitboxCol(sf::Color col)
 {
 	box.setFillColor(col);
+}
+sf::Vector2f HitboxManager::getSize()
+{
+	return size;
 }
 #pragma endregion

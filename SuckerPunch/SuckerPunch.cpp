@@ -25,6 +25,7 @@
 #include <math.h>
 #include "HitboxManager.h"
 #include "Entity.h"
+#include "SoundManager.h"
 
 
 
@@ -62,20 +63,27 @@ int main()
 	text.setPosition(400, 40);
 	text.setCharacterSize(40);
 
-
 	//create a player & hitbox managers
 	Entity player(100, 100);
 	sf::Text p1Health;
 	p1Health.setFont(font);
-	p1Health.setString("player One HP: " + std::to_string(player.getHealth()));
+	p1Health.setString("player One HP: " + std::to_string(player.healthBar.getHealth()));
 	p1Health.setPosition(20, 40);
 	
 	//Same for player 2
 	Entity player2(800, 100);
 	sf::Text p2Health;
 	p2Health.setFont(font);
-	p2Health.setString("player Two HP: " + std::to_string(player2.getHealth()));
+	p2Health.setString("player Two HP: " + std::to_string(player2.healthBar.getHealth()));
 	p2Health.setPosition(780, 40);
+
+	//Sound stuff
+	SoundManager snd(player.GetVel(), player.GetPos(), player2.GetPos());
+	snd.loopBGM(snd.bgm);
+	snd.threeDSound(snd.threeDS);
+	bool sfxOn = true; //Sound effects
+	bool tdsOn = true; //3D sound
+	bool rvbOn = true; //Reverb
 
 	// Start game loop 
 	while (window.isOpen())
@@ -84,7 +92,25 @@ int main()
 	// Process events 
 	sf::Event Event;
 
-	if (player.getHitbox().getCanMove() && player.getHealth() > 0 && player2.getHealth() > 0)
+	//Flipping the bools on audio 
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)))
+	{
+		sfxOn = !sfxOn;
+	}
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)))
+	{
+		snd.pauseBGM();
+	}
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)))
+	{
+		snd.pauseTDS();
+	}
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)))
+	{
+		snd.pauseRVB();
+	}
+
+	if (player.getHitbox().getCanMove() && player.healthBar.getHealth() > 0 && player2.healthBar.getHealth() > 0)
 	{
 		//PLAYER 1
 		//Move Right
@@ -95,10 +121,21 @@ int main()
 			player.Accelerate(-player.MOVESPEED, 0);			
 		//Attack
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::G)))
-			player.Attack(sf::Vector2f(100,100), 10, player.GetPos(), player2.GetPos());
+			player.Attack(sf::Vector2f(100, 100), 10, player.GetPos(), player2.GetPos(), player.getHitbox().getSize().x);
+		//Attack
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::F)))
+		{
+			player.Attack(sf::Vector2f(200, 50), 20, player.GetPos(), player2.GetPos(), player.getHitbox().getSize().x);
+			if (sfxOn)
+			{
+				snd.playSound(snd.punch);
+			}
+			
+		}
+			
 	}
 
-	if (player2.getHitbox().getCanMove() && player.getHealth() > 0 && player2.getHealth() > 0)
+	if (player2.getHitbox().getCanMove() && player.healthBar.getHealth() > 0 && player2.healthBar.getHealth() > 0)
 	{
 		//PLAYER 2
 		//Move Right
@@ -109,7 +146,7 @@ int main()
 			player2.Accelerate(-player2.MOVESPEED, 0);
 		//Attack
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::K)))
-			player2.Attack(sf::Vector2f(100, 100), 10, player2.GetPos(), player.GetPos());
+			player2.Attack(sf::Vector2f(100, 100), 10, player2.GetPos(), player.GetPos(), player2.getHitbox().getSize().x);
 		}
 
 
@@ -122,13 +159,20 @@ int main()
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
 
-			if (player.getHitbox().getCanMove() && player.getHealth() > 0 && player2.getHealth() > 0)
+			if (player.getHitbox().getCanMove() && player.healthBar.getHealth() > 0 && player2.healthBar.getHealth() > 0)
 			{
 				//Jump UP
 				if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::W))
-					player.Jump(-100);;
+				{
+					player.Jump(-100);
+					if (sfxOn)
+					{
+						snd.playSound(snd.jump);
+					}		
+				}
+					
 			}
-			if (player2.getHitbox().getCanMove() && player.getHealth() > 0 && player2.getHealth() > 0)
+			if (player2.getHitbox().getCanMove() && player.healthBar.getHealth() > 0 && player2.healthBar.getHealth() > 0)
 			{
 				//Jump UP
 				if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Up))
@@ -141,20 +185,22 @@ int main()
 		{
 			player.setCooldown(59); //Starts the cooldown.
 			player.setHitboxCol(sf::Color(255,255,0,128));
-			player.setHealth(player.getHealth() - 1); //REdices the players total health by 1
-			p1Health.setString("player One HP: " + std::to_string(player.getHealth())); //Updates the text/healthbar
+			player.healthBar.setHealth(player.healthBar.getHealth() - 1); //REdices the players total health by 1
+			p1Health.setString("player One HP: " + std::to_string(player.healthBar.getHealth())); //Updates the text/healthbar
 		}
 		//vice versa
 		if (player2.getHitbox().BoxCollision(player.getHitbox().getHurtBox()) && player2.getCooldown() == 60)
 		{
 			player2.setCooldown(59);
 			player2.setHitboxCol(sf::Color(255, 255, 0, 128));
-			player2.setHealth(player2.getHealth() - 1);
-			p2Health.setString("player Two HP: " + std::to_string(player2.getHealth()));
+			player2.healthBar.setHealth(player2.healthBar.getHealth() - 1);
+			p2Health.setString("player Two HP: " + std::to_string(player2.healthBar.getHealth()));
 		}
 
 		player.Update();
 		player2.Update();
+
+		snd.update(player.GetVel(), player.GetPos(), player2.GetPos());
 
 		//prepare frame
 		window.clear();
@@ -176,15 +222,15 @@ int main()
 			window.draw(player2.getHitbox().getHurtBox());
 		}
 
-		if (player.getHealth() <= 0)
+		if (player.healthBar.getHealth() <= 0)
 		{
 			text.setString("Player 2 Wins!");
 		}
-		if (player2.getHealth() <= 0)
+		if (player2.healthBar.getHealth() <= 0)
 		{
 			text.setString("Player 1 Wins!");
 		}
-		if (player2.getHealth() <= 0 || player.getHealth() <= 0)
+		if (player2.healthBar.getHealth() <= 0 || player.healthBar.getHealth() <= 0)
 		{
 			window.draw(text);
 		}

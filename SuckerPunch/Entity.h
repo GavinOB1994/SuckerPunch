@@ -24,23 +24,28 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "HitboxManager.h"
+#include "HealthBar.h"
 
 class Entity
 {
 public:
-	Entity(int x, int y);
+	Entity(float x, float y);
+
+	HealthBar<float> healthBar; //It is crucial that you delclare the type inside the angle brackets e.g. <int> , <float> , <double>
 
 	//Consts
 	const float MAXVEL = 20;
 	const float GRAVITY = 3;
 	const float DECELERATION = 0.75f;
 	const float MOVESPEED = 5;
+	const float WIDTH = 0;
+	const float HEIGHT = 0;
 
 	//Updates
 	void Update();
 
 	//Player actions
-	void Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos);
+	void Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth);
 	void Jump(float vel);
 	void MoveX(int x);
 	void MoveY(int y);
@@ -49,21 +54,25 @@ public:
 
 	//Getters and setters for Position
 	sf::Vector2f GetPos();
-	void SetPos(float x, float y);
+	template <typename T, typename U> //using template func
+	void SetPos(T x, U y);
 	void SetPos(sf::Vector2f p);
 
-	//Getters and setters for Velocity
+	//Getters and setters for Velocity 
 	sf::Vector2f GetVel();
-	void SetVel(float x, float y);
+	template <typename U, typename T> //using template func
+	void SetVel(T x, U y);
 	void SetVel(sf::Vector2f v);
 
 	//Getters and setters for Hitbox
 	HitboxManager getHitbox();
 	void setHitboxCol(sf::Color col);
 
-	//Getters and setters for Health
-	int getHealth();
-	void setHealth(int h);
+	//Getters and setters for Speed using template functions
+	template <typename T>
+	T getSpeed();
+	template <typename T>
+	void setSpeed(T h);
 
 	//Getters and setters for Cooldown
 	int getCooldown();
@@ -71,7 +80,7 @@ public:
 
 private:
 	HitboxManager hitbox;
-
+	
 	sf::Texture texture;
 
 	sf::Vector2f pos;
@@ -79,7 +88,6 @@ private:
 
 	int width;
 	int height;
-	int health;
 	int speed;
 	int cooldown;
 };

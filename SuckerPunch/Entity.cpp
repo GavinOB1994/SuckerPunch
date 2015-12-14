@@ -2,12 +2,13 @@
 #include "Entity.h"
 
 
-Entity::Entity(int x, int y)
+Entity::Entity(float x, float y)
 {
 	pos = sf::Vector2f(2, 2);
 	SetPos(x, y);
-	setHealth(3);
+	healthBar.setHealth(healthBar.MAXHEALTH);
 	cooldown = 60;
+	hitbox = HitboxManager(100, 200);
 }
 
 void Entity::Update()
@@ -54,9 +55,9 @@ void Entity::Update()
 
 #pragma region Player actions
 
-void Entity::Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos)
+void Entity::Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth)
 {
-	hitbox.HurtBoxUse(size, noOfFrames, playerPos, enemyPos);
+	hitbox.HurtBoxUse(size, noOfFrames, playerPos, enemyPos, playerWidth);
 	vel = sf::Vector2f(0, 0);
 }
 void Entity::Jump(float vel)
@@ -94,7 +95,8 @@ sf::Vector2f Entity::GetPos()
 {
 	return pos;
 }
-void Entity::SetPos(float x, float y)
+template <typename T, typename U>
+void Entity::SetPos(T x, U y)
 {
 	pos.x = x;
 	pos.y = y;
@@ -120,20 +122,23 @@ void Entity::SetVel(sf::Vector2f v)//overides current momentum
 {
 	vel = v;
 }
-void Entity::SetVel(float x, float y)
+template <typename U, typename T>
+void Entity::SetVel(T x, U y)
 {
 	vel.x = x;
 	vel.y = y;
 }
 
 //Getters and setters for health
-int Entity::getHealth()
+template <typename T>
+T Entity::getSpeed()
 {
-	return health;
+	return speed;
 }
-void Entity::setHealth(int h)
+template <typename T>
+void Entity::setSpeed(T h)
 {
-	health = h;
+	speed = h;
 }
 
 //Getters and setters for cooldown
