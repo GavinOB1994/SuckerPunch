@@ -39,7 +39,7 @@ public:
 	HitboxManager(float width = 50.0f, float height = 50.0f);
 	bool BoxCollision(sf::RectangleShape enemyBox);
 	//template <typename T, typename U>
-	void HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth);
+	void HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth, int yOffset, int xOffset);
 	void IsHurtAcitve();
 	void Update(sf::Vector2f pos);
 	void setHitboxCol(sf::Color col);

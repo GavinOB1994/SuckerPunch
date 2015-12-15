@@ -42,6 +42,13 @@ SoundManager::SoundManager(sf::Vector2f vel, sf::Vector2f listnerPos, sf::Vector
 		std::cout << "FMOD error! (%d) %s\n" << result;
 		exit(-1);
 	}
+	//Load Woosh
+	result = FMODsys->createSound("../SuckerPunch/Sound/woosh.wav", FMOD_DEFAULT, 0, &woosh);
+	if (result != FMOD_OK)
+	{
+		std::cout << "FMOD error! (%d) %s\n" << result;
+		exit(-1);
+	}
 	//Load 3D sound
 	result = FMODsys->createSound("../SuckerPunch/Sound/threed.mp3", FMOD_LOOP_NORMAL | FMOD_3D, 0, &threeDS);
 	if (result != FMOD_OK)
@@ -49,6 +56,7 @@ SoundManager::SoundManager(sf::Vector2f vel, sf::Vector2f listnerPos, sf::Vector
 		std::cout << "FMOD error! (%d) %s\n" << result;
 		exit(-1);
 	}
+
 
 
 	//STUFF FOR LISTNER
@@ -164,9 +172,30 @@ void SoundManager::update(sf::Vector2f vel, sf::Vector2f listnerPos, sf::Vector2
 	}
 
 	FMOD_VECTOR pos = { source.x, 0.0f, source.y };
-	float mindist = 100.0f;
-	float maxdist = 150.0f;
+	float mindist = 10.0f;
+	float maxdist = 200.0f;
 	reverb->set3DAttributes(&pos, mindist, maxdist);
 
 	FMODsys->update();
+}
+
+FMOD::Sound* SoundManager::getPunch()
+{
+	return punch;
+}
+FMOD::Sound* SoundManager::getJump()
+{
+	return jump;
+}
+FMOD::Sound* SoundManager::getBGM()
+{
+	return bgm;
+}
+FMOD::Sound* SoundManager::getThreeDS()
+{
+	return threeDS;
+}
+FMOD::Sound* SoundManager::getWoosh()
+{
+	return woosh;
 }

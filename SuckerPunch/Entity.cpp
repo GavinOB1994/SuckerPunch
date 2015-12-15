@@ -8,7 +8,12 @@ Entity::Entity(float x, float y)
 	SetPos(x, y);
 	healthBar.setHealth(healthBar.MAXHEALTH);
 	cooldown = 60;
-	hitbox = HitboxManager(100, 200);
+	hitbox = HitboxManager(80, 200);
+	ptex.loadFromFile("ken-sprite-sheet.png");
+	playerImage.setTexture(ptex);
+	playerImage.setTextureRect(sf::IntRect(0, 0, sprWidth, sprHight));
+	spriteX = 0;
+	spriteY = 0;
 }
 
 void Entity::Update()
@@ -27,6 +32,11 @@ void Entity::Update()
 	else
 	{
 		SetPos(GetPos().x, 500);//Setting a hard floor TEMPORARY
+	}
+
+	if (GetPos().y < 50)
+	{
+		SetPos(GetPos().x, 50);
 	}
 
 	if (GetPos().x < 0)
@@ -48,16 +58,16 @@ void Entity::Update()
 			setHitboxCol(sf::Color(0, 255, 0, 128));
 		}
 	}
-
+	playerImage.setTextureRect(sf::IntRect(spriteX * sprWidth, spriteY * sprHight, sprWidth, sprHight));
 	hitbox.Update(pos);
 
 }
 
 #pragma region Player actions
 
-void Entity::Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth)
+void Entity::Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth, int yOffset, int xOffset)
 {
-	hitbox.HurtBoxUse(size, noOfFrames, playerPos, enemyPos, playerWidth);
+	hitbox.HurtBoxUse(size, noOfFrames, playerPos, enemyPos, playerWidth, yOffset, xOffset);
 	vel = sf::Vector2f(0, 0);
 }
 void Entity::Jump(float vel)

@@ -38,14 +38,14 @@ public:
 	const float GRAVITY = 3;
 	const float DECELERATION = 0.75f;
 	const float MOVESPEED = 5;
-	const float WIDTH = 0;
-	const float HEIGHT = 0;
+	const float WIDTH = 100;
+	const float HEIGHT = 200;
 
 	//Updates
 	void Update();
 
 	//Player actions
-	void Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth);
+	void Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth, int yOffset, int xOffset);
 	void Jump(float vel);
 	void MoveX(int x);
 	void MoveY(int y);
@@ -77,6 +77,16 @@ public:
 	//Getters and setters for Cooldown
 	int getCooldown();
 	void setCooldown(int i);
+
+	sf::Texture ptex;
+	sf::Sprite playerImage;
+	int spriteX;
+	int spriteY;
+	const int sprWidth = 100;
+	const int sprHight = 120;
+	void Draw();
+	int timer = 5;
+	bool faceL = true;
 
 private:
 	HitboxManager hitbox;

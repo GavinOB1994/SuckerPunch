@@ -24,11 +24,12 @@
 
 class SoundManager
 {
-public:
+private:
 	FMOD::Sound *punch;
 	FMOD::Sound *jump;
 	FMOD::Sound *bgm;
 	FMOD::Sound *threeDS;
+	FMOD::Sound *woosh;
 
 	FMOD::Reverb *reverb;
 
@@ -45,6 +46,7 @@ public:
 	bool tdsPaused;
 	bool rvbPaused;
 
+public:
 	SoundManager(sf::Vector2f vel, sf::Vector2f listnerPos, sf::Vector2f source);
 	void playSound(FMOD::Sound *snd);
 	void threeDSound(FMOD::Sound *snd);
@@ -53,5 +55,11 @@ public:
 	void pauseTDS();
 	void pauseRVB();
 	void update(sf::Vector2f vel, sf::Vector2f listnerPos, sf::Vector2f source);
+
+	FMOD::Sound* getPunch();
+	FMOD::Sound* getJump();
+	FMOD::Sound* getBGM();
+	FMOD::Sound* getThreeDS();
+	FMOD::Sound* getWoosh();
 };
 

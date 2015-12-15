@@ -19,15 +19,15 @@ void HitboxManager::Update(sf::Vector2f pos)
 	IsHurtAcitve();
 }
 //template <typename T, typename U>
-void HitboxManager::HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth)
+void HitboxManager::HurtBoxUse(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth, int yOffset, int xOffset)
 {
 	if (playerPos.x < enemyPos.x)
 	{
-		hurtBox.setPosition(sf::Vector2f(playerPos.x + playerWidth, playerPos.y));
+		hurtBox.setPosition(sf::Vector2f(playerPos.x + playerWidth + xOffset, playerPos.y + yOffset));
 	}
 	else
 	{
-		hurtBox.setPosition(sf::Vector2f(playerPos.x - size.x, playerPos.y));
+		hurtBox.setPosition(sf::Vector2f(playerPos.x - size.x - xOffset, playerPos.y + yOffset));
 	}
 	
 	hurtBox.setSize(size);
