@@ -63,6 +63,17 @@ void Entity::Update()
 
 }
 
+void Entity::Reset(int x, int y)
+{
+	pos = sf::Vector2f(2, 2);
+	SetPos(x, y);
+	healthBar.setHealth(healthBar.MAXHEALTH);
+	cooldown = 60;
+	hitbox = HitboxManager(80, 200);
+	spriteX = 0;
+	spriteY = 0;
+}
+
 #pragma region Player actions
 
 void Entity::Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth, int yOffset, int xOffset)

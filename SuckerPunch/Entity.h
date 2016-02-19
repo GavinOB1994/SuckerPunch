@@ -51,6 +51,7 @@ public:
 	void MoveY(int y);
 	void Accelerate(sf::Vector2f vec);
 	void Accelerate(float x, float y);
+	void Reset(int x, int y);
 
 	//Getters and setters for Position
 	sf::Vector2f GetPos();
