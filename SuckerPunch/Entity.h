@@ -79,6 +79,8 @@ public:
 	int getCooldown();
 	void setCooldown(int i);
 
+
+	//Textures by David
 	sf::Texture ptex;
 	sf::Sprite playerImage;
 	int spriteX;
@@ -88,6 +90,7 @@ public:
 	void Draw();
 	int timer = 5;
 	bool faceL = true;
+	/////////////////
 
 private:
 	HitboxManager hitbox;

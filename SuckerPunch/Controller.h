@@ -28,6 +28,8 @@ private:
 
 	int xAxis;
 
+	sf::Vector2f dPadDirection;
+
 	bool b0curr;
 	bool b0prev;
 
@@ -40,6 +42,21 @@ private:
 	bool b3curr;
 	bool b3prev;
 
+	bool startCurr;
+	bool startPrev;
+
+	bool leftCurr;
+	bool leftPrev;
+
+	bool rightCurr;
+	bool rightPrev;
+
+	bool upCurr;
+	bool upPrev;
+
+	bool downCurr;
+	bool downPrev;
+
 public:
 	Controller(int contIndex);
 	void update();
@@ -48,6 +65,13 @@ public:
 	bool b1Press();
 	bool b2Press();
 	bool b3Press();
+
+	bool startPress();
+
+	bool leftPress();
+	bool rightPress();
+	bool upPress();
+	bool downPress();
 
 	int getX();
 };

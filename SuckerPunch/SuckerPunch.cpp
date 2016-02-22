@@ -27,6 +27,7 @@
 #include "Entity.h"
 #include "SoundManager.h"
 #include "Controller.h"
+#include "UI.h"
 
 
 
@@ -64,47 +65,18 @@ int main()
 	text.setPosition(400, 40);
 	text.setCharacterSize(40);
 
-	//create a player & hitbox managers
+	//Create UI
+	UI ui;
+
+	//create a player 
 	Entity player(100, 100);
-	sf::RectangleShape healthBar[5];
-	for (int i = 0; i < 5; i++)
-	{
-		healthBar[i].setSize(sf::Vector2f(80, 50));
-		healthBar[i].setPosition(sf::Vector2f(20 + 90 * i, 10));
-		healthBar[i].setFillColor(sf::Color::Green);
-	}
-	sf::Text p1Health;
-	p1Health.setFont(font);
-	p1Health.setString("player One HP: " + std::to_string(player.healthBar.getHealth()));
-	p1Health.setPosition(20, 0);
 
 	//Same for player 2
 	Entity player2(800, 100);
-	sf::RectangleShape healthBar2[5];
-	for (int i = 0; i < 5; i++)
-	{
-		healthBar2[i].setSize(sf::Vector2f(80, 50));
-		healthBar2[i].setPosition(sf::Vector2f( 550 + (90 * i), 10));
-		healthBar2[i].setFillColor(sf::Color::Red);
-	}
-	sf::Text p2Health;
-	p2Health.setFont(font);
-	p2Health.setString("player Two HP: " + std::to_string(player2.healthBar.getHealth()));
-	p2Health.setPosition(680, 0);
 
-	//Array of platforms
-	//const int PLATFORMCOUNT = 3;
-	//sf::RectangleShape platforms[PLATFORMCOUNT];
-	//platforms[0].setSize(sf::Vector2f(300, 25));
-	//platforms[0].setPosition(sf::Vector2f(100, 450));
-	//platforms[1].setSize(sf::Vector2f(300, 25));
-	//platforms[1].setPosition(sf::Vector2f(600, 450));
-	//platforms[2].setSize(sf::Vector2f(300, 25));
-	//platforms[2].setPosition(sf::Vector2f(350 , 250));
-
-
+	//VAriables for character slect
 	// Setting colour presets for character select
-	sf::Color colours[3][3];
+	sf::Color colours[3][3]; //Due to the shape of my colour select I chose a 2D array
 	colours[0][0] = sf::Color::White;
 	colours[0][1] = sf::Color::Black;
 	colours[0][2] = sf::Color::Red;
@@ -118,9 +90,29 @@ int main()
 	int currentColY = 0;
 	int currentColX2 = 0;
 	int currentColY2 = 0;
-	sf::RectangleShape colBoxes[3][3];
+	sf::RectangleShape colBoxes[3][3]; //This is the array of colours for player 1
+	sf::RectangleShape colBoxes2[3][3]; //Same for player 2
 	sf::RectangleShape selectBox(sf::Vector2f(120, 120));
 	selectBox.setFillColor(sf::Color::Color(255, 128, 0, 255));
+
+	for (int i = 0; i < 3; i++) //Nested for loops to accomodate the 2D array
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			colBoxes[i][j] = sf::RectangleShape(sf::Vector2f(100, 100)); //Here we set all of the starter variables for the colour select square
+			colBoxes[i][j].setPosition(sf::Vector2f(i * 110 + 10, j * 110 + 200));
+			colBoxes[i][j].setFillColor(colours[i][j]);
+		}
+	}
+	for (int i = 0; i < 3; i++) //Same for player 2 squares
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			colBoxes2[i][j] = sf::RectangleShape(sf::Vector2f(100, 100));
+			colBoxes2[i][j].setPosition(sf::Vector2f(i * 110 + 670, j * 110 + 200));
+			colBoxes2[i][j].setFillColor(colours[i][j]);
+		}
+	}
 
 	//Sound stuff
 	SoundManager snd(player.GetVel(), player.GetPos(), player2.GetPos());
@@ -155,11 +147,41 @@ int main()
 	sf::Sprite squid;
 	sf::Sprite squid2;
 	sf::Sprite eyes;
+	sf::Sprite eyes2;
 	squidTex.loadFromFile("../SuckerPunch/Sprites/Blank squid.png");
 	eyeTex.loadFromFile("../SuckerPunch/Sprites/GlovesAndEyes.png");
 	squid.setTexture(squidTex);
 	squid2.setTexture(squidTex);
 	eyes.setTexture(eyeTex);
+	eyes2.setTexture(eyeTex);
+
+	//Setting the position for the squid sprites in colour select
+	eyes.setPosition(colBoxes[1][1].getPosition()); 
+	eyes.setScale(4.762, 4.762);
+	squid.setPosition(colBoxes[1][1].getPosition());
+	squid.setScale(4.762, 4.762);
+	eyes2.setPosition(colBoxes2[1][1].getPosition() + sf::Vector2f(100, 0));
+	eyes2.setScale(-4.762, 4.762);
+	squid2.setPosition(colBoxes2[1][1].getPosition() + sf::Vector2f(100, 0));
+	squid2.setScale(-4.762, 4.762);
+
+	//Title menu Variables
+	sf::Texture titleTex; //Creating a texture for the title
+	titleTex.loadFromFile("Title.png"); //loading
+	sf::Sprite titleSpr = sf::Sprite(titleTex); //turining it into a sprite
+	titleSpr.setOrigin(titleSpr.getTextureRect().width / 2, titleSpr.getTextureRect().height / 2); //setting the origin to the centre of the sprite
+	titleSpr.setPosition(window.getSize().x / 2, window.getSize().y / 2); //putting it in the centre of the screen
+
+	sf::Text subTitle; //Creating the title tooltip
+	subTitle.setFont(font);
+	subTitle.setString("Press Enter to Start");
+	subTitle.setPosition(380, 600); //Hardcoding the postiton of the tooltip
+
+	//Pause menu variables
+	sf::Text pauseText;
+	pauseText.setFont(font);
+	pauseText.setString("Press Space to unpause \n Press R to reset");
+	pauseText.setPosition(380, 600);
 
 	// Start game loop 
 	while (window.isOpen())
@@ -168,43 +190,35 @@ int main()
 	// Process events 
 	sf::Event Event;
 
+//All of the regions for the different states updates
+
+#pragma region Menu
 	if (gameState == menu)
 	{
 		//prepare frame
 		window.clear();
-		window.draw(backImg);
-		sf::Texture titleTex;
-		titleTex.loadFromFile("Title.png");
-		sf::Sprite titleSpr = sf::Sprite(titleTex);
-		titleSpr.setOrigin(279, 90);
-		titleSpr.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-		window.draw(titleSpr);
+		window.draw(backImg); //Draw the background image
+		window.draw(titleSpr); //Draw the game title sprite
+		window.draw(subTitle); //Draw the tootltip text to the screen
 		while (window.pollEvent(Event))
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || sf::Joystick::isButtonPressed(0, 7))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.startPress() || c2.startPress())
 				gameState = charSelect;
-		}
-
-		sf::Text subTitle;
-		subTitle.setFont(font);
-		subTitle.setString("Press Enter to Start");
-		subTitle.setPosition(380, 600);
-		
-		window.draw(subTitle);
+		}		
 	}
+#pragma endregion
+
+#pragma region CharSelect
 	else if (gameState == charSelect)
 	{
 		//prepare frame
 		window.clear();
-		window.draw(backImg);
+		window.draw(backImg); //Draw the background
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++) //Nested for loops to accomodate the 2D array
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				colBoxes[i][j] = sf::RectangleShape(sf::Vector2f(100, 100));
-				colBoxes[i][j].setPosition(sf::Vector2f(i * 110 + 10, j * 110 + 200));
-				colBoxes[i][j].setFillColor(colours[i][j]);
 				if (currentColX == i && currentColY == j)
 				{
 					selectBox.setPosition(sf::Vector2f(i * 110 + 0, j * 110 + 190));
@@ -218,48 +232,47 @@ int main()
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				colBoxes[i][j] = sf::RectangleShape(sf::Vector2f(100, 100));
-				colBoxes[i][j].setPosition(sf::Vector2f(i * 110 + 670, j * 110 + 200));
-				colBoxes[i][j].setFillColor(colours[i][j]);
 				if (currentColX2 == i && currentColY2 == j)
 				{
 					selectBox.setPosition(sf::Vector2f(i * 110 + 660, j * 110 + 190));
 					window.draw(selectBox);
 				}
-				window.draw(colBoxes[i][j]);
+				window.draw(colBoxes2[i][j]);
 			}
 		}
+
 
 #pragma region Buttons
 
 		while (window.pollEvent(Event))
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || sf::Joystick::isButtonPressed(0, 7))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.startPress() || c2.startPress())
 			{
-				player.playerImage.setColor(colours[currentColX][currentColY]);
+				player.playerImage.setColor(colours[currentColX][currentColY]);	//Setting the colour dor p1 based on the slected colour
 				player2.playerImage.setColor(colours[currentColX2][currentColY2]);
+				ui.SetColours(colours[currentColX][currentColY], colours[currentColX2][currentColY2]);
 				gameState = game;
 			}			
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Joystick::isButtonPressed(0, 8))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || c1.upPress())
 			{
 				currentColY--;
 				if (currentColY == 1 && currentColX == 1)
 					currentColY = 0;
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Joystick::isButtonPressed(0, 4))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Joystick::isButtonPressed(0, 20))
 			{
 				currentColY++;
 				if (currentColY == 1 && currentColX == 1)
 					currentColY = 2;
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Joystick::isButtonPressed(0, 6))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Joystick::isButtonPressed(0, 22))
 			{
 				currentColX++;
 				if (currentColY == 1 && currentColX == 1)
 					currentColX = 2;
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Joystick::isButtonPressed(0, 5))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Joystick::isButtonPressed(0, 24))
 			{
 				currentColX--;
 				if (currentColY == 1 && currentColX == 1)
@@ -296,6 +309,7 @@ int main()
 
 #pragma region NumberManagement
 
+		//This is all just number management for the Colour select box
 		if (currentColX > 2)
 		{
 			currentColX = 0;
@@ -334,30 +348,23 @@ int main()
 #pragma endregion
 
 
-		eyes.setPosition(colBoxes[1][1].getPosition() - sf::Vector2f(660, 0));
-		eyes.setScale(4.762, 4.762);
+		//Squid 1 draw code		
 		window.draw(eyes);
-		squid.setPosition(colBoxes[1][1].getPosition() - sf::Vector2f(660, 0));
-		squid.setScale(4.762, 4.762);
-		squid.setColor(colours[currentColX][currentColY]);
+		squid.setColor(colours[currentColX][currentColY]); //Set the colour of the squid
 		window.draw(squid);
 
-		eyes.setPosition(colBoxes[1][1].getPosition() + sf::Vector2f(100, 0));
-		eyes.setScale(-4.762, 4.762);
-		window.draw(eyes);
-		squid.setPosition(colBoxes[1][1].getPosition() + sf::Vector2f(100, 0));
-		squid.setScale(-4.762, 4.762);
-		squid.setColor(colours[currentColX2][currentColY2]);
-		window.draw(squid);
+		window.draw(eyes2);
+		squid2.setColor(colours[currentColX2][currentColY2]);
+		window.draw(squid2);
 	}
+#pragma endregion
+
+#pragma region Pause
 	else if (gameState == pause)
 	{
 
 		window.clear();
-		sf::Text pauseText;
-		pauseText.setFont(font);
-		pauseText.setString("Press Space to unpause \n Press R to reset");
-		pauseText.setPosition(380, 600);
+
 		window.draw(pauseText);
 		if (pauseTimer > 0)
 			pauseTimer--;
@@ -372,6 +379,9 @@ int main()
 			player2.Reset(800, 100);
 		}
 	}
+#pragma endregion
+
+#pragma region Game
 	else if (gameState == game)
 	{
 
@@ -381,7 +391,7 @@ int main()
 			p1AtkTimer--;
 		if (p2AtkTimer > 0)
 			p2AtkTimer--;
-
+#pragma region boolFlips
 		//Flipping the bools on audio when key is pressed
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)))
 		{
@@ -404,7 +414,9 @@ int main()
 			pauseTimer = 20;
 			gameState = pause;
 		}
+#pragma endregion
 
+#pragma region playerInput
 		if (player.getHitbox().getCanMove() && player.healthBar.getHealth() > 0 && player2.healthBar.getHealth() > 0)
 		{
 			//PLAYER 1
@@ -496,7 +508,7 @@ int main()
 				player2.spriteX = 0;
 			}
 		}
-
+#pragma endregion
 
 		while (window.pollEvent(Event))
 		{
@@ -513,8 +525,7 @@ int main()
 		{
 			player.setCooldown(59); //Starts the cooldown.
 			player.setHitboxCol(sf::Color(255, 255, 0, 128));
-			player.healthBar.setHealth(player.healthBar.getHealth() - 1); //REdices the players total health by 1
-			p1Health.setString("player One HP: " + std::to_string(player.healthBar.getHealth())); //Updates the text/healthbar
+			player.healthBar.setHealth(player.healthBar.getHealth() - 1); //Reduces the players total health by 1
 			if (sfxOn)
 				snd.playSound(snd.getPunch());
 		}
@@ -524,34 +535,14 @@ int main()
 			player2.setCooldown(59);
 			player2.setHitboxCol(sf::Color(255, 255, 0, 128));
 			player2.healthBar.setHealth(player2.healthBar.getHealth() - 1);
-			p2Health.setString("player Two HP: " + std::to_string(player2.healthBar.getHealth()));
 			if (sfxOn)
 				snd.playSound(snd.getPunch());
 		}
 
-		//Collision for player and platforms
-		//for (int i = 0; i < PLATFORMCOUNT; i++)
-		//{
-		//	if (player.getHitbox().BoxCollision(platforms[i])) //If the player collides with a platform
-		//	{
-		//		if (player.GetPos().y + player.HEIGHT >= platforms[i].getPosition().y)//Make sure the player is on top of the platform
-		//		{
-		//			if (player.GetVel().x > 0) //Make sure the player is traveling down
-		//			{
-		//				player.SetPos(player.GetPos().x, platforms[i].getPosition().y - player.HEIGHT);
-		//				player.SetVel(player.GetVel().x, 0.0f);
-		//			}
-		//		}
-		//	}
-		//}
 
-
-
-		//Update methods
+		//Update methods for game
 		player.Update();
 		player2.Update();
-		c1.update();
-		c2.update();
 		snd.update(player.GetVel(), player.GetPos(), player2.GetPos());
 
 		//prepare frame
@@ -559,21 +550,9 @@ int main()
 
 		window.draw(backImg);
 
-		//draw frame items
-		//window.draw(p1Health);
-		//window.draw(p2Health);
+		//Drawing the UI
+		ui.Draw(&window, player.healthBar.getHealth(), player2.healthBar.getHealth());
 
-		for (int i = 0; i < player.healthBar.getHealth(); i++)
-		{
-			window.draw(healthBar[i]);
-		}
-		for (int i = 0; i < player2.healthBar.getHealth(); i++)
-		{
-			window.draw(healthBar2[4 - i]);
-		}
-		//window.draw(platforms[0]);
-		//window.draw(platforms[1]);
-		//window.draw(platforms[2]);
 
 		//Toggle for Hitbox Mode ///////////////////////////////////////////////////
 		window.draw(player.getHitbox().getBox());
@@ -592,14 +571,21 @@ int main()
 		if (player.healthBar.getHealth() <= 0)
 		{
 			text.setString("Player 2 Wins!");
+			ui.p1Win(false);
 		}
 		if (player2.healthBar.getHealth() <= 0)
 		{
 			text.setString("Player 1 Wins!");
+			ui.p1Win(true);
 		}
 		if (player2.healthBar.getHealth() <= 0 || player.healthBar.getHealth() <= 0)
 		{
 			window.draw(text);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.startPress() || c2.startPress())
+			{
+				player.Reset(100, 100);
+				player2.Reset(800, 100);
+			}
 		}
 #pragma region Player1Animation
 		player.playerImage.setPosition(player.GetPos());
@@ -850,6 +836,11 @@ int main()
 #pragma endregion
 
 	}
+#pragma endregion
+
+	//Global updates
+	c1.update();
+	c2.update();
 		// Finally, display rendered frame on screen 
 		window.display();
 	} //loop back for next frame

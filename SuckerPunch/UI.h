@@ -27,15 +27,18 @@
 class UI
 {
 private:
-	int p1Health = 100;
-	sf::RectangleShape p1Bar;
-	int p2Health = 100;
-	sf::RectangleShape p2Bar;
+	sf::RectangleShape healthBar[5];
+	sf::RectangleShape healthBar2[5];
+	int p1WinCount;
+	int p2WinCount;
 
-	const int healthWidth = 100;
-	const int healthHeight = 20;
 public:
+
+	UI(sf::Color, sf::Color);
 	UI();
-	void update();
+	void p1Win(bool);
+	void SetColours(sf::Color, sf::Color);
+	void Update();
+	void Draw(sf::RenderWindow*, int, int);
 };
 

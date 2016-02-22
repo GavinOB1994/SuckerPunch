@@ -25,7 +25,7 @@ void Entity::Update()
 	}
 
 
-	if (GetPos().y < 500)
+	if (GetPos().y < 500 && getCooldown() == 60)
 	{
 		Accelerate(0, GRAVITY);//Acceleration due to gravity
 	}
@@ -78,8 +78,8 @@ void Entity::Reset(int x, int y)
 
 void Entity::Attack(sf::Vector2f size, int noOfFrames, sf::Vector2f playerPos, sf::Vector2f enemyPos, float playerWidth, int yOffset, int xOffset)
 {
-	hitbox.HurtBoxUse(size, noOfFrames, playerPos, enemyPos, playerWidth, yOffset, xOffset);
-	vel = sf::Vector2f(0, 0);
+	hitbox.HurtBoxUse(size, noOfFrames, playerPos, enemyPos, playerWidth, yOffset, xOffset); //Basically just an intermidiary function due to encapsulation
+	vel = sf::Vector2f(0, 0);//stops velocity
 }
 void Entity::Jump(float vel)
 {
