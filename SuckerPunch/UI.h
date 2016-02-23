@@ -42,5 +42,7 @@ public:
 	void SetColours(sf::Color, sf::Color);
 	void Update();
 	void Draw(sf::RenderWindow*, int, int);
+	int getp1WinCount(bool);
+	void reset();
 };
 

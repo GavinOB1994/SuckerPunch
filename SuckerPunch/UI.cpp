@@ -18,13 +18,13 @@ UI::UI()
 	}
 	for (int i = 0; i < 2; i++)
 	{
-		winDots[i].setRadius(40.0f);
+		winDots[i].setRadius(30.0f);
 		winDots[i].setFillColor(sf::Color::Yellow);
 		winDots[i].setPosition(sf::Vector2f(100 * i, 100));
 	}
 	for (int i = 0; i < 2; i++)
 	{
-		winDots2[i].setRadius(40.0f);
+		winDots2[i].setRadius(30.0f);
 		winDots2[i].setFillColor(sf::Color::Yellow);
 		winDots2[i].setPosition(sf::Vector2f(1000 - 100 * i, 100));
 	}
@@ -96,6 +96,24 @@ void UI::p1Win(bool whoWin)
 	{
 		p2WinCount++;
 	}
+}
+
+int UI::getp1WinCount(bool win)
+{
+	if (win)
+	{
+		return p1WinCount;
+	}
+	else
+	{
+		return p2WinCount;
+	}
+}
+
+void UI::reset()
+{
+	p1WinCount = 0;
+	p2WinCount = 0;
 }
 
 

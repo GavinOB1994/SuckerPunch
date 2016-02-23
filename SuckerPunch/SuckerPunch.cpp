@@ -60,7 +60,7 @@ int main()
 	//create a formatted text string
 	sf::Text text;
 	text.setFont(font);
-	text.setString("Test text that tests things");
+	text.setString("");
 	text.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
 	text.setPosition(400, 40);
 	text.setCharacterSize(40);
@@ -198,6 +198,7 @@ int main()
 		window.draw(backImg); //Draw the background image
 		window.draw(titleSpr); //Draw the game title sprite
 		window.draw(subTitle); //Draw the tootltip text to the screen
+		window.draw(text);
 		while (window.pollEvent(Event))
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.startPress() || c2.startPress())
@@ -360,18 +361,17 @@ int main()
 #pragma region Pause
 	else if (gameState == pause)
 	{
-
 		window.clear();
 
 		window.draw(pauseText);
 		if (pauseTimer > 0)
 			pauseTimer--;
-		if (/*pauseTimer < 1 && */(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || c1.startPress() || c2.startPress()))
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || c1.startPress() || c2.startPress()) && pauseTimer < 1)
 		{
 			pauseTimer = 20;
 			gameState = game;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R) || c1.upPress() || c2.upPress())
 		{
 			player.Reset(100, 100);
 			player2.Reset(800, 100);
@@ -419,13 +419,13 @@ int main()
 		{
 			//PLAYER 1
 			//Move Right
-			if (((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || c1.getX() > 20) && player.GetVel().x < +player.MAXVEL)
+			if ((c1.getX() > 20) && player.GetVel().x < +player.MAXVEL)
 				player.Accelerate(player.MOVESPEED, 0);
 			//Move Left
-			if (((sf::Keyboard::isKeyPressed(sf::Keyboard::A)) || c1.getX() < -20) && player.GetVel().x > -player.MAXVEL)
+			if ((c1.getX() < -20) && player.GetVel().x > -player.MAXVEL)
 				player.Accelerate(-player.MOVESPEED, 0);
 			//Attack 1
-			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::G)) || c1.b2Press())
+			if (c1.b2Press())
 			{
 				player.Attack(sf::Vector2f(25, 200), 15, player.GetPos(), player2.GetPos(), player.getHitbox().getSize().x, 0, 0);
 				if (sfxOn)
@@ -434,7 +434,7 @@ int main()
 				player.spriteX = 0;
 			}
 			//Attack 2
-			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::F)) || c1.b3Press())
+			if (c1.b3Press())
 			{
 				player.Attack(sf::Vector2f(100, 25), 40, player.GetPos(), player2.GetPos(), player.getHitbox().getSize().x , player.HEIGHT - 25 , 0);
 				if (sfxOn)
@@ -443,7 +443,7 @@ int main()
 				player.spriteX = 0;
 			}
 			//Attack 3
-			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::F)) || c1.b1Press())
+			if (c1.b1Press())
 			{
 				player.Attack(sf::Vector2f(125, 225), 25, player.GetPos(), player2.GetPos(), player.getHitbox().getSize().x, -50, -100);
 				if (sfxOn)
@@ -465,13 +465,13 @@ int main()
 		{
 			//PLAYER 2
 			//Move Right
-			if (((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || c2.getX() > 20) && player2.GetVel().x < +player2.MAXVEL)
+			if ((c2.getX() > 20) && player2.GetVel().x < +player2.MAXVEL)
 				player2.Accelerate(player2.MOVESPEED, 0);
 			//Move Left
-			if (((sf::Keyboard::isKeyPressed(sf::Keyboard::A)) || c2.getX() < -20) && player2.GetVel().x > -player2.MAXVEL)
+			if ((c2.getX() < -20) && player2.GetVel().x > -player2.MAXVEL)
 				player2.Accelerate(-player2.MOVESPEED, 0);
 			//Attack 1
-			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::G)) || c2.b2Press())
+			if (c2.b2Press())
 			{
 				player2.Attack(sf::Vector2f(25, 200), 15, player2.GetPos(), player.GetPos(), player2.getHitbox().getSize().x, 0, 0);
 				if (sfxOn)
@@ -480,7 +480,7 @@ int main()
 				player2.spriteX = 0;
 			}
 			//Attack 2
-			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::F)) || c2.b3Press())
+			if (c2.b3Press())
 			{
 				player2.Attack(sf::Vector2f(100, 25), 40, player2.GetPos(), player.GetPos(), player2.getHitbox().getSize().x, player2.HEIGHT - 25, 0);
 				if (sfxOn)
@@ -489,7 +489,7 @@ int main()
 				player2.spriteX = 0;
 			}
 			//Attack 3
-			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::F)) || c2.b1Press())
+			if (c2.b1Press())
 			{
 				player2.Attack(sf::Vector2f(125, 225), 25, player2.GetPos(), player2.GetPos(), player2.getHitbox().getSize().x, -50, -100);
 				if (sfxOn)
@@ -578,13 +578,30 @@ int main()
 		}
 		if (player2.healthBar.getHealth() <= 0 || player.healthBar.getHealth() <= 0)
 		{
-			window.draw(text);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.startPress() || c2.startPress())
+			
+			if (ui.getp1WinCount(true) == 2)
+			{
+				text.setString("Player 1 Wins! \n GAME OVER");
+				player.Reset(100, 100);
+				player2.Reset(800, 100);
+				ui.reset();
+				gameState = menu;
+			}
+			if (ui.getp1WinCount(false) == 2)
+			{
+				text.setString("Player 2 Wins! \n GAME OVER");
+				player.Reset(100, 100);
+				player2.Reset(800, 100);
+				ui.reset();
+				gameState = menu;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.b0Press() || c2.b0Press() && (ui.getp1WinCount(true) != 2 || ui.getp1WinCount(false) != 2))
 			{
 				text.setString("");
 				player.Reset(100, 100);
 				player2.Reset(800, 100);
 			}
+			//window.draw(text);
 		}
 
 //Spreite animations - David
