@@ -119,8 +119,6 @@ int main()
 	snd.loopBGM(snd.getBGM());
 	snd.threeDSound(snd.getThreeDS());
 	bool sfxOn = true; //Sound effects
-	bool tdsOn = true; //3D sound
-	bool rvbOn = true; //Reverb
 
 	//Controller stuff
 	Controller c1(0);
@@ -180,7 +178,7 @@ int main()
 	//Pause menu variables
 	sf::Text pauseText;
 	pauseText.setFont(font);
-	pauseText.setString("Press Space to unpause \n Press R to reset");
+	pauseText.setString("Press Space OR Start to unpause \n Press R OR up to reset");
 	pauseText.setPosition(380, 600);
 
 	// Start game loop 
@@ -368,7 +366,7 @@ int main()
 		window.draw(pauseText);
 		if (pauseTimer > 0)
 			pauseTimer--;
-		if (pauseTimer < 1 && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		if (/*pauseTimer < 1 && */(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || c1.startPress() || c2.startPress()))
 		{
 			pauseTimer = 20;
 			gameState = game;
@@ -409,7 +407,7 @@ int main()
 		{
 			snd.pauseRVB();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && pauseTimer < 1)
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || c1.startPress() || c2.startPress()) && pauseTimer < 1)
 		{
 			pauseTimer = 20;
 			gameState = pause;
@@ -587,6 +585,8 @@ int main()
 				player2.Reset(800, 100);
 			}
 		}
+
+//Spreite animations - David
 #pragma region Player1Animation
 		player.playerImage.setPosition(player.GetPos());
 		player.playerImage.setScale(sf::Vector2f(1, 1.6));
