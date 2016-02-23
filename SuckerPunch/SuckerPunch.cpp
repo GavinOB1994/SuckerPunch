@@ -566,12 +566,12 @@ int main()
 			window.draw(player2.getHitbox().getHurtBox());
 		}
 
-		if (player.healthBar.getHealth() <= 0)
+		if (player.healthBar.getHealth() <= 0 && text.getString() != "Player 2 Wins!")
 		{
 			text.setString("Player 2 Wins!");
 			ui.p1Win(false);
 		}
-		if (player2.healthBar.getHealth() <= 0)
+		if (player2.healthBar.getHealth() <= 0 && text.getString() != "Player 1 Wins!")
 		{
 			text.setString("Player 1 Wins!");
 			ui.p1Win(true);
@@ -581,6 +581,7 @@ int main()
 			window.draw(text);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) || c1.startPress() || c2.startPress())
 			{
+				text.setString("");
 				player.Reset(100, 100);
 				player2.Reset(800, 100);
 			}

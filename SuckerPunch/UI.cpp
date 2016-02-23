@@ -16,6 +16,18 @@ UI::UI()
 		healthBar2[i].setPosition(sf::Vector2f(550 + (90 * i), 10));
 		healthBar2[i].setFillColor(sf::Color::Red);
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		winDots[i].setRadius(40.0f);
+		winDots[i].setFillColor(sf::Color::Yellow);
+		winDots[i].setPosition(sf::Vector2f(100 * i, 100));
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		winDots2[i].setRadius(40.0f);
+		winDots2[i].setFillColor(sf::Color::Yellow);
+		winDots2[i].setPosition(sf::Vector2f(1000 - 100 * i, 100));
+	}
 
 	p1WinCount = 0;
 	p2WinCount = 0;
@@ -51,6 +63,14 @@ void UI::Draw(sf::RenderWindow * window, int h1, int h2)
 	for (int i = 0; i < h2; i++)
 	{
 		window->draw(healthBar2[4 - i]);
+	}
+	for (int i = 0; i < p1WinCount; i++)
+	{
+		window->draw(winDots[i]);
+	}
+	for (int i = 0; i < p2WinCount; i++)
+	{
+		window->draw(winDots2[i]);
 	}
 }
 

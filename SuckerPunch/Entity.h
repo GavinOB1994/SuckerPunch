@@ -95,7 +95,7 @@ public:
 private:
 	HitboxManager hitbox;
 	
-	sf::Texture texture;
+	//sf::Texture texture;
 
 	sf::Vector2f pos;
 	sf::Vector2f vel; //the x component if this is the speed variable

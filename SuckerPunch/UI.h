@@ -29,6 +29,8 @@ class UI
 private:
 	sf::RectangleShape healthBar[5];
 	sf::RectangleShape healthBar2[5];
+	sf::CircleShape winDots[2];
+	sf::CircleShape winDots2[2];
 	int p1WinCount;
 	int p2WinCount;
 
